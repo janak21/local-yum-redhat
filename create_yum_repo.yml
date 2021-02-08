@@ -1,0 +1,38 @@
+- hosts: all
+  tasks:
+   - name: Mount RedHat DVD
+     mount:
+        src: "/dev/cdrom"
+        path: "/dvd"
+        state: mounted
+        fstype: "iso9660"
+
+   - name: Create local yum repo from DVD
+     yum_repository:
+        baseurl: "/dvd/AppStream"
+        name: "AppStream"
+        description: "Yum repo from DVD"
+        gpgcheck: no
+
+   - yum_repository:
+        baseurl: "/dvd/BaseOS"
+        name: "BaseOS"
+        description: "Yum repo from DVD"
+        gpgcheck: no
+
+
+   - name: Install Epel repo
+     yum_repository:
+        baseurl: "https://dl.fedoraproject.org/pub/epel/8/Everything/x86_64/"
+        name: "Epel"
+        description: "Epel repo for extra packages"
+        gpgcheck: no
+    
+
+   - shell: "yum repolist"
+    
+
+   - name: Install sshpass require for ansible
+     package:
+        name: "sshpass"
+        state: present
